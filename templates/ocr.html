@@ -1,0 +1,45 @@
+{% extends "layout.html" %} {% block content %}
+
+<p id="count" style="display: none">0</p>
+<button id="checkStatus" onclick="server.increment()" style="display: none">
+  0
+</button>
+<div id="user" style="display: none">{{user}}</div>
+<div class="ocr_head">
+  <h2>OCR Receiving</h2>
+</div>
+<div class="ocr_head_button">
+  <a href="{{ url_for('routes.receiving')}}" class="btn btn-primary" >Next Batch</a>
+  {{value}}
+</div>
+<div class="ocr_content">
+  <div class="ocr_body">
+    <img
+      class="ocr_bg"
+      class="center"
+      src="{{ url_for('video_feed', user=user) }}"
+    />
+  </div>
+  <div class="ocr_value">
+    <ul>
+      <li>
+        Label Found:
+        <span id="label_"
+          >
+          <span id="on_status">VALID</span>
+          <span id="off_status">INVALID</span></span>
+      </li>
+      <li>Dc Status: <span id="dc_"></span></li>
+    </ul>
+  </div>
+</div>
+<script type="text/javascript">
+  $(document).ready(function () {
+    setInterval(function () {
+      if ($("#user").html() != "") {
+        $("#checkStatus").click();
+      }
+    }, 3000);
+  });
+</script>
+{% endblock %}

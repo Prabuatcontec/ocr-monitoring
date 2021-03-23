@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link
+      href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/bootstrap.min.css') }}"
+    />
+    <link
+      href="{{ url_for('static', filename='css/main.css') }}"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/x-icon" href="/static/img/fav.ico" />
+    
+    <script src="/static/js/jquery-3.5.1.min.js"></script>
+    <script src="/static/js/jquery-ui.min.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <img width="40" src="/static/img/vulcan.svg" />
+      <h1 class="title">Receivng Automation</h1>
+      <div id="checkUpdates">
+        <label class="switch" id="cEnable" style="display: none;">
+          <input type="checkbox" checked id="testCheckDisable"  />
+          <span class="slider round"></span>
+        </label>
+
+        <label class="switch" id="cDisable" style="display: none;">
+          <input type="checkbox"  id="testCheckEnable" />
+          <span class="slider round"></span>
+        </label>
+      </div>
+      <div id="logout">Logout</div>
+      <div id="uname"></div>
+    </header>
+    <div id="overlay" style="display: none">
+      <div class="spinner"></div>
+      <br />
+      Loading...
+    </div>
+    <div class="container-fluid">{% block content %} {% endblock %}</div>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/popper.min.js"></script>
+    <script src="/static/js/bootstrap1.min.js"></script>
+    <script type="text/javascript">
+      $("#logout").click(logout);
+
+      $(function () {
+        $("#testCheckEnable").on("click", function (e) {
+          if (confirm("Are you sure you want to enable update?")) {
+            $.getJSON("/background_process_enable/1", function (data) {
+              localStorage.setItem("update", 1);
+              document.getElementById("cEnable").style.display = "block";
+              document.getElementById("cDisable").style.display = "none";
+              //do nothing
+            });
+            return false;
+          } else {
+            console.log(12);
+            return false;
+          }
+        });
+
+        $("#testCheckDisable").on("click", function (e) {
+          if (confirm("Are you sure you want to disable update?")) {
+            $.getJSON("/background_process_enable/0", function (data) {
+              localStorage.removeItem("update");
+              document.getElementById("cEnable").style.display = "none";
+              document.getElementById("cDisable").style.display = "block";
+              //do nothing
+            });
+            return false;
+          } else {
+            return false;
+          }
+        });
+      });
+
+      if (localStorage.getItem("update") === null) {  
+        document.getElementById("cEnable").style.display = "none";
+        document.getElementById("cDisable").style.display = "block";
+      } else {
+        
+        document.getElementById("cEnable").style.display = "block";
+        document.getElementById("cDisable").style.display = "none";
+      }
+
+      if (localStorage.getItem("username") === null) {
+        document.getElementById("logout").style.display = "none";
+        document.getElementById("checkUpdates").style.display = "none";
+      } else {
+        document.getElementById("logout").style.display = "block";
+        document.getElementById("uname").innerHTML = localStorage.getItem(
+          "username"
+        );
+        document.getElementById("checkUpdates").style.display = "block";
+      }
+      function logout() {
+        localStorage.removeItem("username");
+        window.location = "/logout";
+      }
+    </script>
+  </body>
+</html>

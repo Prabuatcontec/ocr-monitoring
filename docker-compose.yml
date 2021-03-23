@@ -1,0 +1,10 @@
+version: "3"
+services:
+  serve:
+    image: ocr-receiving
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    devices:
+      - "/dev/video0:/dev/video0"

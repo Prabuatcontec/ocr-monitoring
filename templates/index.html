@@ -1,0 +1,47 @@
+{% extends "layout.html" %} {% block content %} {% if error %}
+<div class="alert alert-danger alert-dismissible ">{{error}}</div>
+{% endif %}
+<div id="centerDiv">
+  <div class="container upload-form login">
+    <div class="form-container off-canvas">
+      <div class="login-screen">
+        <div class="app-title">
+          <h1>Login</h1>
+        </div>
+        <form role="form" class="form-signin" action="/receiving" method="POST">
+          <div class="form-group">
+            <input placeholder="Username" type="text" class="form-control" name="username" id="username"
+              aria-required="true" aria-invalid="true" required />
+          </div>
+
+          <div class="form-group">
+            <input placeholder="Password" type="password" class="form-control" name="password" id="password"
+              aria-required="true" aria-invalid="true" required />
+          </div>
+
+          <button class="btn btn-lg btn-primary btn-block" type="submit">
+            Sign in
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  $('.alert').delay(3000).fadeOut();
+  var $loginForm = $(".form-signin"),
+    $login_text_fields = $loginForm.find("input[type='text']");
+
+  $(".login-logo,.form-container").removeClass("off-canvas");
+
+  function _form_success_aria(label) {
+    var target = label.parent().find("input");
+    target.attr("aria-invalid", "false");
+  }
+
+  function _form_error_aria(validator) {
+    console.log(validator.target.elements[0]);
+  }
+</script>
+{% endblock %}

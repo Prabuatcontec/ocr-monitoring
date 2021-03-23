@@ -1,0 +1,138 @@
+{% extends "layout.html" %} {% block content %}
+<div id="centerDiv">
+  <div class="upload-form">
+    <span id="username" style="display: none">{{user}}</span>
+    <form action="/video" method="POST" name="receiving" id="receiving">
+      <div class="form-group">
+        <label for="company">Customer</label>
+        <div>
+          <select id="customer" name="customer" class="form-control">
+            <option>SELECT</option>
+            {% for col in customers %}
+            <option value="{{ col['1'] }}">{{ col['2'] }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <!-- <div class="form-group">
+        <label for="company">Model</label>
+        <div>
+          <select id="model" name="model" class="form-control">
+            <option>SELECT</option>
+          </select>
+        </div>
+        </div> -->
+      </div> <div class="form-group">
+        <div class="demo">
+          <ul id="sortable1" class="connectedSortable">
+          </ul>
+        </div>
+
+        <div class="sortable1 list" style="display: none;"></div>
+      </div>
+      <textarea name="validation" id="validation" style="display: none;"></textarea>
+      <div class="form-group">
+        <div >
+          <input type="submit" class="btn btn-primary" />
+        </div>
+      </div>
+     
+    </form>
+  </div>
+</div>
+<script type="text/javascript">
+  setTimeout(function () {
+    if (localStorage.getItem("username") == "") {
+      window.location = "/";
+    }
+  }, 3000);
+  localStorage.setItem(
+    "username",
+    document.getElementById("username").innerHTML
+  );
+
+  $(document).ready(function () {
+    localStorage.removeItem("validation");
+    $("#sortable1").sortable({
+      connectWith: ".connectedSortable",
+      stop: function (event, ui) {
+        var s = 0;
+        $(".connectedSortable").each(function () {
+          result = "";
+
+          var valNew = $(this).sortable("toArray"); 
+          console.log(valNew);
+          var l = jQuery.parseJSON(localStorage.getItem("validation"));
+          var m = l['data'];
+          for(var i=0;i<valNew.length;i++){
+            m[valNew[i]]['sort'] = i;
+          }
+          l['data']=m;
+
+          localStorage.setItem("validation",JSON.stringify(l));
+
+          $("#validation").val(JSON.stringify(l));
+          $(this)
+            .find("li")
+            .each(function () {
+              result += $(this).text() + ",";
+            });
+          $("." + $(this).attr("id") + ".list").html(result);
+        });
+      },
+    });
+
+    $(".upload-form").removeClass("off-canvas");
+    $("select#customer").change(function () {
+      $("#overlay").fadeIn();
+      document.getElementById("receiving").submit();
+      // var customerId = $(this).find("option:selected").val();
+      // $('#model').find('option:not(:first)').remove();
+      // $("#overlay").fadeIn();
+      // $.ajax({
+      //   type: "GET",
+      //   url: "api/customer/models/" + customerId,
+      //   data: {},
+      //   contentType: "application/json",
+      //   dataType: "json",
+      //   success: function (response) {
+      //     var m = {};
+      //     $.each(response["results"], function (key, value) {
+      //       m['"'+value["1"]+'"'] = JSON.parse(value["2"]);
+      //     });
+      //     localStorage.setItem("validation",JSON.stringify(m));
+      //     $("#validation").val(JSON.stringify(m));
+      //     console.log(m);
+      //     $("#overlay").fadeOut();
+      //     document.getElementById("receiving").submit();
+      //   },
+      // });
+    });
+
+    // $("select#model").change(function () {
+    //   var modelId = $(this).find("option:selected").val();
+    //   $("#overlay").fadeIn();
+    //   $.ajax({
+    //     type: "GET",
+    //     url: "api/model/" + modelId,
+    //     data: {},
+    //     contentType: "application/json",
+    //     dataType: "json",
+    //     success: function (response) {
+    //       var l = jQuery.parseJSON(response);
+          
+    //       var lo = 0;
+    //       l["data"].forEach(function(entry) {
+    //         l["data"][lo]["sort"] = lo;
+    //         $("#sortable1").append('<li id="'+lo+'" class="column ">'+l["data"][lo]['label']+'</li>');
+    //         lo++;
+    //       });
+    //       localStorage.setItem("validation",JSON.stringify(l));
+    //       $("#validation").val(JSON.stringify(l));
+    //       $("#overlay").fadeOut();
+    //     },
+    //   });
+    // });
+  });
+</script>
+{% endblock %}
